@@ -108,7 +108,7 @@ def update(request):
 			return HttpResponseRedirect('/stock/stock_success/')
 		else:
 			return render(request,'update.html',{'user':request.user,'stock':form})	
-	form=StockForm(instance=name)
+	form=StockForm()
 	return render(request,'update.html',{'user':request.user,'stock':form})
 
 def list(request):
