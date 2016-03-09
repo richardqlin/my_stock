@@ -89,7 +89,10 @@ def location_success(request):
 
 def menu(request):
 	wea=weather(request)
-	return render(request,'menu.html',{'full_name':request.user,'weather':wea})
+	if len(wea)==0:
+		return render(request,'login.html')
+	else:
+		return render(request,'menu.html',{'full_name':request.user,'weather':wea})
 
 def update(request):
 	#wea=weather(request)
@@ -147,17 +150,14 @@ def delete(request):
 
 def weather(request):
 	location=Location.objects.filter(username=request.user)
+	if location.count()==0:
+		return location
 	list_loc=[]
-	for loc in location:
-		city=loc.city
-		state=loc.state
-		
-		list_loc.append(city)
-		list_loc.append(state)
-		
-	print list_loc
+	city=location[0].city
+	state=location[0].state
+	list_loc.append(city)
+	list_loc.append(state)
 	f=urllib2.urlopen('http://api.wunderground.com/api/f3c442098e60ca9c/conditions/q/'+state+'/'+city+'.json')
-
 	json_string=f.read()
 	parsed_json=json.loads(json_string)
 	#print parsed_json
@@ -168,11 +168,11 @@ def weather(request):
 	wind_mph=parsed_json['current_observation']["wind_mph"]
 	image=parsed_json['current_observation']['icon_url']
 	image=str(image)
-	print image
+	#print image
 	list_loc.append(image)
 	list_loc.append(temp)
 	list_loc.append(humid)
 	list_loc.append(wind)
 	list_loc.append(wind_mph)
 	return list_loc
-	#return image
+	
