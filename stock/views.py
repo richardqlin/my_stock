@@ -97,19 +97,11 @@ def update(request):
 	print 'request.method',request.method
 	print 'request.POST',request.POST
 	name=request.user
-	#name=str(name)
 	print 'type:',type(name)
 	if request.method=='POST':
-		form=StockForm(request.POST,instance=name)
-		print 'request.method',request.method
-		print 'form:',form
-		print 'form is valid:',form.is_valid
-	
-		if form.is_valid():
-			cd=form.save(commit=False)
-			cd.user=request.user
-			print cd
-			cd.save()
+		form=StockForm(request.POST)
+		if form.is_valid():		
+			form.save()
 			return HttpResponseRedirect('/stock/stock_success/')
 		else:
 			return render(request,'update.html',{'user':request.user,'stock':form})	
@@ -168,7 +160,7 @@ def weather(request):
 
 	json_string=f.read()
 	parsed_json=json.loads(json_string)
-	print parsed_json
+	#print parsed_json
 	weather=parsed_json['current_observation']['weather']
 	temp=parsed_json['current_observation']['temperature_string']
 	humid=parsed_json['current_observation']["relative_humidity"]
